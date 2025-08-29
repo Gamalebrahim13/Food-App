@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FaLock } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // 👈 أيقونات العين
 import logo from "../../../assets/images/logo.png";
 import { privateAxiosInstance, USERS_URLS } from "../../../Services/Urls/Urls"; 
-import { toast } from "react-toastify"; // ✅ استيراد التوست
+import { toast } from "react-toastify";
 
 interface ChangePasswordModalProps {
   onClose: () => void;
@@ -26,15 +27,21 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
     }
     try {
       setLoading(true);
-      const { data } = await privateAxiosInstance.put(USERS_URLS.Change_Pass, {
-        oldPassword,
-        newPassword,
-        confirmNewPassword,
-      });
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("You are not logged in ❌");
+        return;
+      }
+
+      const { data } = await privateAxiosInstance.put(
+        USERS_URLS.Change_Pass,
+        { oldPassword, newPassword, confirmNewPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.success("Password changed successfully ✅");
       console.log(data);
-      onClose(); // يقفل المودال بعد النجاح
+      onClose();
     } catch (error: any) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to change password ❌");
@@ -47,10 +54,7 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg w-[400px] p-6 relative">
         {/* زرار الإغلاق */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-green-600 hover:text-green-800"
-        >
+        <button onClick={onClose} className="absolute top-3 right-3 text-green-600 hover:text-green-800">
           <IoMdClose size={24} />
         </button>
 
@@ -60,9 +64,7 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
         </div>
 
         {/* العنوان */}
-        <h2 className="text-xl font-semibold text-center mb-2">
-          Change Your Password
-        </h2>
+        <h2 className="text-xl font-semibold text-center mb-2">Change Your Password</h2>
         <p className="text-gray-500 text-center mb-6">Enter your details below</p>
 
         {/* Inputs */}
@@ -77,8 +79,8 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
               onChange={(e) => setOldPassword(e.target.value)}
               className="w-full py-2 outline-none"
             />
-            <button type="button" onClick={() => setShowOld(!showOld)}>
-              {showOld ? "🙈" : "👁️"}
+            <button type="button" onClick={() => setShowOld(!showOld)} className="text-gray-600">
+              {showOld ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </button>
           </div>
 
@@ -92,8 +94,8 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full py-2 outline-none"
             />
-            <button type="button" onClick={() => setShowNew(!showNew)}>
-              {showNew ? "🙈" : "👁️"}
+            <button type="button" onClick={() => setShowNew(!showNew)} className="text-gray-600">
+              {showNew ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </button>
           </div>
 
@@ -107,8 +109,8 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               className="w-full py-2 outline-none"
             />
-            <button type="button" onClick={() => setShowConfirm(!showConfirm)}>
-              {showConfirm ? "🙈" : "👁️"}
+            <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="text-gray-600">
+              {showConfirm ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </button>
           </div>
         </div>

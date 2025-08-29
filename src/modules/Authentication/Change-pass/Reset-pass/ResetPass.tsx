@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; // ✅ استدعاء التوستفاى
 import "react-toastify/dist/ReactToastify.css"; 
 import { publicAxiosInstance, USERS_URLS } from "../../../../Services/Urls/Urls";
+import  { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+
 
 export default function ResetPass() {
   const [email, setEmail] = useState("");
@@ -76,39 +78,39 @@ export default function ResetPass() {
           className="w-full border rounded-lg px-3 py-3 focus:outline-none"
         />
 
-        <div className="relative flex items-center border rounded-lg px-3">
-          <MdLock className="text-gray-400" size={18} />
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-2 py-3 focus:outline-none"
-          />
-          <span
-            className="absolute right-3 cursor-pointer text-gray-600"
-            onClick={togglePassword}
-          >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
-        </div>
+       <div className="relative flex items-center border rounded-lg px-3">
+  <MdLock className="text-gray-400" size={18} />
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="New Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className="w-full px-2 py-3 focus:outline-none"
+  />
+  <span
+    className="absolute right-3 cursor-pointer text-gray-600"
+    onClick={togglePassword}
+  >
+    {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+  </span>
+</div>
 
-        <div className="relative flex items-center border rounded-lg px-3">
-          <MdLock className="text-gray-400" size={18} />
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-2 py-3 focus:outline-none"
-          />
-          <span
-            className="absolute right-3 cursor-pointer text-gray-600"
-            onClick={toggleConfirmPassword}
-          >
-            {showConfirmPassword ? "🙈" : "👁️"}
-          </span>
-        </div>
+<div className="relative flex items-center border rounded-lg px-3">
+  <MdLock className="text-gray-400" size={18} />
+  <input
+    type={showConfirmPassword ? "text" : "password"}
+    placeholder="Confirm Password"
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+    className="w-full px-2 py-3 focus:outline-none"
+  />
+  <span
+    className="absolute right-3 cursor-pointer text-gray-600"
+    onClick={toggleConfirmPassword}
+  >
+    {showConfirmPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+  </span>
+</div>
 
         <button
           type="submit"

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FaEye, FaTrash, FaTimes } from "react-icons/fa"; // تعديل الأيقونات
 import Nodata from "./Nodata/Nodata";
-
+import { toast } from "react-toastify";
 export default function Recipes() {
   const [recipes, setRecipes] = useState([
     {
@@ -79,19 +79,23 @@ export default function Recipes() {
     setRecipes(recipes.filter((recipe) => recipe.id !== id));
   };
 
-  const handleAddFavorite = (recipe: any) => {
-    const saved = localStorage.getItem("favorites");
-    let favs = saved ? JSON.parse(saved) : [];
 
-    if (favs.find((fav: any) => fav.id === recipe.id)) {
-      alert("Already in favorites!");
-      return;
-    }
 
-    favs.push(recipe);
-    localStorage.setItem("favorites", JSON.stringify(favs));
-    alert("Added to favorites!");
-  };
+const handleAddFavorite = (recipe: any) => {
+  const saved = localStorage.getItem("favorites");
+  let favs = saved ? JSON.parse(saved) : [];
+
+  if (favs.find((fav: any) => fav.id === recipe.id)) {
+    toast.info("✅ Recipe already in favorites!");
+    return;
+  }
+
+  favs.push(recipe);
+  localStorage.setItem("favorites", JSON.stringify(favs));
+
+  toast.success("💖 Recipe added to favorites!");
+};
+
 
   const filteredRecipes = recipes.filter((item) => {
     const matchesSearch = item.name

@@ -36,7 +36,7 @@ const pageHeaders: Record<
   { title: string; desc: string; img: string }
 > = {
   "/dashboard/home": {
-    title: "Welcome Home",
+    title: "Welcome",
     desc: "Overview of your dashboard",
     img: homeHeader,
   },
@@ -60,6 +60,12 @@ const pageHeaders: Record<
     desc: "Organize and manage all categories for your items",
     img: categoriesHeader,
   },
+};
+
+// ✅ Helper function عشان أول حرف يبقى Capital
+const capitalizeName = (name: string) => {
+  if (!name) return "";
+  return name.charAt(0).toUpperCase() + name.slice(1);
 };
 
 export default function MasterLayout() {
@@ -96,13 +102,17 @@ export default function MasterLayout() {
 
       // ✅ لو موجود user في localStorage (من اللوجين)
       const userData = localStorage.getItem("user");
+      let name = "";
+
       if (userData) {
         const parsedUser = JSON.parse(userData);
-        setUserName(parsedUser.name || parsedUser.email || "User");
+        name = parsedUser.name || parsedUser.email || "User";
       } else {
         // fallback من التوكن
-        setUserName(decoded.name || decoded.email || "User");
+        name = decoded.name || decoded.email || "User";
       }
+
+      setUserName(capitalizeName(name));
     } catch (error) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -233,9 +243,14 @@ export default function MasterLayout() {
 
         {/* Green Header */}
         <div className="bg-green-600 text-white p-8 flex justify-between items-center mx-6 mt-6 rounded-2xl">
-          <div>
-            <h2 className="text-2xl font-bold">{currentHeader.title}</h2>
-            <p className="text-2sm">{currentHeader.desc}</p>
+          <div className="p-8">
+            <h2 className="text-2xl font-bold">
+              {currentHeader.title}{" "}
+              {userName && (
+                <span className="text-yellow-300">, {userName} 👋</span>
+              )}
+            </h2>
+            <p className="text-sm">{currentHeader.desc}</p>
           </div>
           {currentHeader.img && (
             <img src={currentHeader.img} alt="illustration" className="h-25" />

@@ -4,6 +4,17 @@ import { publicAxiosInstance, USERS_URLS } from "../../../../Services/Urls/Urls"
 import { MdEmail as Mail } from "react-icons/md";
 import { FaLock as Lock } from "react-icons/fa";
 import { FaEye as Eye, FaEyeSlash as EyeOff } from "react-icons/fa";
+import jwtDecode from "jwt-decode";
+
+interface DecodedToken {
+  userId: number;
+  userName: string;
+  userEmail: string;
+  userGroup: string;
+  roles: string[];
+  iat: number;
+  exp: number;
+}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -58,15 +69,33 @@ export default function Login() {
     try {
       const { data } = await publicAxiosInstance.post(USERS_URLS.Login, formData);
 
-      // تخزين التوكن + بيانات المستخدم في localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      console.log("Full Response:", data); // 👈 الرد اللي جاي من السيرفر
 
-      // طباعة البيانات عشان تتأكد
-      console.log("User Data:", data.user);
-      console.log("Token:", data.token);
+      if (data.token) {
+        const decoded: DecodedToken = jwtDecode(data.token);
 
-      navigate("/dashboard");
+        // ✅ خزّن التوكن
+        localStorage.setItem("token", data.token);
+
+        // ✅ خزّن بيانات اليوزر بشكل مرتب
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: decoded.userId,
+            name: decoded.userName,
+            email: decoded.userEmail,
+            group: decoded.userGroup,
+            roles: decoded.roles,
+          })
+        );
+
+        console.log("Decoded User:", decoded);
+        console.log("Token:", data.token);
+
+        navigate("/dashboard");
+      } else {
+        setServerError("No token returned from server");
+      }
     } catch (error: any) {
       setServerError(error.response?.data?.message || "Something went wrong");
     } finally {
